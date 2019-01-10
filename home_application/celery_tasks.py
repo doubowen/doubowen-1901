@@ -20,7 +20,7 @@ from home_application.models import TaskType
 
 
 @task()
-def async_task(bk_biz_id,bk_host_innerip ,bk_cloud_id,script_param,user_name):
+def async_task(bk_biz_id,bk_host_innerip ,bk_cloud_id,script_param,user_name,bk_token):
     """
     定义一个 celery 异步任务
     """
@@ -35,7 +35,10 @@ def async_task(bk_biz_id,bk_host_innerip ,bk_cloud_id,script_param,user_name):
     client = get_client_by_user(user_name)
     client.set_bk_api_ver('v2')
 
+
     res = client.job.fast_execute_script({
+        'bk_token': bk_token,
+        'bk_username': 'doubowen',
         'bk_biz_id': bk_biz_id,
         'ip_list': [{
             "bk_cloud_id": bk_cloud_id,
@@ -47,8 +50,8 @@ def async_task(bk_biz_id,bk_host_innerip ,bk_cloud_id,script_param,user_name):
         'script_param': script_param,
     })
 
-    if not res.get('result'):
-        return render_json(res)
+    # if not res.get('result'):
+    #     return render_json(res)
 
     task_id = res.get('data').get('job_instance_id')
     while not client.job.get_job_instance_status({
@@ -85,7 +88,7 @@ def async_task(bk_biz_id,bk_host_innerip ,bk_cloud_id,script_param,user_name):
     })
 
 
-def execute_task(bk_biz_id,bk_host_innerip ,bk_cloud_id,script_param,user_name):
+def execute_task(bk_biz_id,bk_host_innerip ,bk_cloud_id,script_param,user_name,bk_token):
     """
     执行 celery 异步任务
 
@@ -96,7 +99,7 @@ def execute_task(bk_biz_id,bk_host_innerip ,bk_cloud_id,script_param,user_name):
         apply_async(): 设置celery的额外执行选项时必须使用该方法，如定时（eta）等
                       详见 ：http://celery.readthedocs.org/en/latest/userguide/calling.html
     """
-    async_task.delay(bk_biz_id,bk_host_innerip ,bk_cloud_id,script_param,user_name)
+    async_task.delay(bk_biz_id,bk_host_innerip ,bk_cloud_id,script_param,user_name,bk_token)
 
 
 @periodic_task(run_every=crontab(minute='*/5', hour='*', day_of_week="*"))
