@@ -24,6 +24,15 @@ def home(request):
             bk_biz_list.remove(x)
             break
     task_list = TaskType.objects.all()
+    OptLog.objects.create(
+        operator='doubowen',
+        bk_biz_id=11,
+        job_id='2201',
+        opt_at='2019-01-10 12:39:30',
+        host_list='10.0.1.13',
+        job_status='successed',
+        opt_type='11.10%|6%|0.00%',
+    )
 
     # 查询集群
     param = {
