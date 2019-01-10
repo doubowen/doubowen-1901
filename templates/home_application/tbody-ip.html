@@ -1,0 +1,10 @@
+                    % for (index, host) in enumerate(bk_host_list):
+                    <tr>
+                        <td>
+                            <input type="checkbox" value="">
+                        </td>
+                        <td>${index}</td>
+                        <td>${host.get('bk_host_innerip')}</td>
+                        <td>${host.get('bk_os_name')}</td>
+                    </tr>
+                    % endfor
