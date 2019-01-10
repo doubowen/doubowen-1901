@@ -20,11 +20,11 @@ from home_application.models import TaskType
 
 
 @task()
-def async_task(bk_biz_id,bk_host_innerip ,bk_cloud_id,task_name,script_param,user_name):
+def async_task(bk_biz_id,bk_host_innerip ,bk_cloud_id,script_param,user_name):
     """
     定义一个 celery 异步任务
     """
-    f = open('script/' + task_name + '.sh')
+    f = open('script/stat.sh')
     # f = open('script/test.sh')
     s = f.read()
     # script_content = TaskType.objects.values("script_content").get(task_name=task_name).get('script_content')
@@ -67,13 +67,18 @@ def async_task(bk_biz_id,bk_host_innerip ,bk_cloud_id,task_name,script_param,use
 
     log_content = res['data'][0]['step_results'][0]['ip_logs'][0]['log_content']
     check_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    OptLog.objects.create(
-        operator='admin',
+
+    a = OptLog.objects.create(
+        operator=user_name,
         bk_biz_id=bk_biz_id,
+        job_id='2201',
         inner_ip=bk_host_innerip,
         opt_at=check_time,
+        host_list='192.168.1.99',
+        job_status='successed',
         opt_type=log_content,
     )
+    print a
     return render_json({
         'result': True,
         'data': {
@@ -84,7 +89,7 @@ def async_task(bk_biz_id,bk_host_innerip ,bk_cloud_id,task_name,script_param,use
     })
 
 
-def execute_task(bk_biz_id,bk_host_innerip ,bk_cloud_id,task_name,script_param,user_name):
+def execute_task(bk_biz_id,bk_host_innerip ,bk_cloud_id,script_param,user_name):
     """
     执行 celery 异步任务
 
@@ -95,7 +100,7 @@ def execute_task(bk_biz_id,bk_host_innerip ,bk_cloud_id,task_name,script_param,u
         apply_async(): 设置celery的额外执行选项时必须使用该方法，如定时（eta）等
                       详见 ：http://celery.readthedocs.org/en/latest/userguide/calling.html
     """
-    async_task.delay(bk_biz_id,bk_host_innerip ,bk_cloud_id,task_name,script_param,user_name)
+    async_task.delay(bk_biz_id,bk_host_innerip ,bk_cloud_id,script_param,user_name)
 
 
 @periodic_task(run_every=crontab(minute='*/5', hour='*', day_of_week="*"))

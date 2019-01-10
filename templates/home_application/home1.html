@@ -74,7 +74,7 @@
                 <div class="collapse navbar-collapse navbar-responsive-collapse" id="king-horizontal-nav2-collapse">
                     <ul class="nav navbar-nav">
                         <li class="king-navbar-active"><a href="${SITE_URL}">首页</a></li>
-                        <li><a href="${SITE_URL}history/">执行记录</a></li>
+                        <li><a href="${SITE_URL}history/">历史任务</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                             <a href="###" class="avatar">
@@ -106,9 +106,9 @@
             <div class="form-group clearfix ">
                 <label class="col-sm-3 control-label bk-lh30 pt0">选择集群：</label>
                 <div class="col-sm-9">
-                    <select name="" id="task_type" class="form-control bk-valign-top">
-                        % for task in task_list:
-                        <option value="${task.task_name}">${task.task_name}</option>
+                    <select name="" id="select-set" class="form-control bk-valign-top">
+                        % for ss in bk_set_list:
+                        <option value="${ss.get('bk_set_id')}">${ss.get('bk_set_name')}</option>
                         % endfor
                     </select>
                 </div>
@@ -130,9 +130,10 @@
                         <th style="width: 25px">
                             <input type="checkbox" name="checkall" value="">
                         </th>
-                        <th style="width: 100px">序号</th>
                         <th style="width:25%">内网IP</th>
-                        <th style="width:25%">操作系统</th>
+                        <th style="width:25%">系统名</th>
+                        <th style="width:25%">主机名</th>
+                        <th style="width:25%">云区域</th>
                     </tr>
                     </thead>
                     <tbody id="tbody-ip">
@@ -141,9 +142,10 @@
                         <td>
                             <input type="checkbox" value=${host.get('bk_host_innerip')}>
                         </td>
-                        <td>${index}</td>
                         <td>${host.get('bk_host_innerip')}</td>
                         <td>${host.get('bk_os_name')}</td>
+                        <td>${host.get('bk_host_name')}</td>
+                        <td>${host.get('bk_cloud_name')}</td>
                     </tr>
                     % endfor
                     </tbody>
@@ -166,7 +168,7 @@
             $.ajax({
     url: site_url + 'api/get_hosts/',
     type: 'GET',
-    data: {bk_biz_id: $("#select-biz").val()},
+    data: {bk_biz_id: $("#select-biz").val(),bk_set_id: $("#select-set").val()},
     success: function (res) {
     if (res.result) {
          $("#tbody-ip").html(res.data);
