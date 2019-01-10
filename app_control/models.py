@@ -15,7 +15,7 @@ class FunctionManager(models.Manager):
         try:
             enabled = self.get(func_code=func_code).enabled
             return (True, int(enabled))
-        except Exception as e:
+        except Exception, e:
             logger.error(u"检查改功能是否开放发生异常，错误信息：%s" % e)
             return (False, 0)
 

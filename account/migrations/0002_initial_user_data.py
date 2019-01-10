@@ -12,7 +12,7 @@ def initial_user_data(apps, schema_editor):
         admin_username_list = settings.ADMIN_USERNAME_LIST
         for username in admin_username_list:
             BkUser.objects.create_superuser(username)
-    except Exception as e:
+    except Exception, e:
         pass
 
 

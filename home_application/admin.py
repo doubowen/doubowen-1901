@@ -5,8 +5,12 @@
 
 # import from lib
 # ===============================================================================
-# from django.contrib import admin
+from django.contrib import admin
 # from apps.__.models import aaaa
 #
 # admin.site.register(aaaa)
 # ===============================================================================
+from models import TaskType
+
+# Register your models here.
+admin.site.register(TaskType)

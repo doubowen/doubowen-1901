@@ -20,8 +20,8 @@ def initial_app_control_data(apps, schema_editor):
         func_obj = serializers.deserialize('python', func_data, ignorenonexistent=True)
         for obj in func_obj:
             obj.save()
-    except Exception as e:
-        print(e)
+    except Exception, e:
+        print e
         pass
 
 
